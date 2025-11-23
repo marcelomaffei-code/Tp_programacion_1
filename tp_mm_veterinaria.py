@@ -156,8 +156,8 @@ def mostrarMenu():
 
 # función principal del programa
 def main():
-    opcion = 0
-    while opcion != 6:  
+    opcion = "0"
+    while opcion != "6":  
         mostrarMenu()
         opcion = input("Seleccione una opción (1-6): ")
         match opcion:
@@ -172,7 +172,7 @@ def main():
             case "5":
                 print("")
             case "6":
-                print("")
+                print("\nGracias por usar el programa!!!. Hasta luego.")
             case _:
                 print("Opción inválida. Intente nuevamente.")
 
