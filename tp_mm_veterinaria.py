@@ -1,8 +1,12 @@
 clientesMatris = [] # lista de clientes
+clientesMatris.append(["Marcelo", "Maffei", "30087647", "marcelo@gmail.com", "Sonic", "Perro", "Mestizo (Perro)", "Sin turno"])
 # voy a asumir que tiene estos animales
 listaAnimales = ["Perro", "Gato", "Conejo", "Cobayo", "Hámster", "Hurón", "Erizo","Otros"]
 # vamos a asumir algunas razas cargadas
-listaRazas = ["Golden Retriever","Pastor Alemán","Bulldog Francés","Caniche (Poodle)","Beagle","Rottweiler","Dálmata","Border Collie","Boxer","Schnauzer","Husky Siberiano","Dogo Argentino","Mestizo (Perro)","Siames","Persa","Sphynx (sin pelo)","Mestizo (Gato)","otras"]
+listaRazas = ["Golden Retriever","Pastor Alemán","Bulldog Francés","Caniche (Poodle)","Beagle",
+              "Rottweiler","Dálmata","Border Collie","Boxer","Schnauzer","Husky Siberiano",
+              "Dogo Argentino","Mestizo (Perro)","Siames","Persa","Sphynx (sin pelo)",
+              "Mestizo (Gato)","otras"]
 
 #valido que no me ingresen datos vacios
 def validarCamposVacios(textoIngreso,textoError):
@@ -22,8 +26,8 @@ def validarEmail():
         if email.count("@") != 1:
             print("!!! El email debe contener exactamente un '@'.")
             continue
-        parte_local, dominio = email.split("@")
-        if parte_local == "" or dominio == "":
+        parteLocal, dominio = email.split("@")
+        if parteLocal == "" or dominio == "":
             print("!!! El email no puede empezar ni terminar con '@'.")
             continue
         if "." not in dominio:
@@ -100,61 +104,122 @@ def cargarDatos():
     raza = opbtenerValorSeleccionado("-Razas-",listaRazas)
     cliente.append(raza)
     
-    cliente.append(turno) #aca lo le asigno turno, porque solo carga sus datos
+    cliente.append("Sin turno") # Inicializamos el turno como "Sin turno"
     print(":) Cliente cargado con éxito.")
     # agrego los datos en la clientesMatris
     clientesMatris.append(cliente)
 
 def buscarUnCliente():
     if len(clientesMatris) == 0:
-        print("\n No hay datos cargados para realizar la busqueda.")
+        print("\n!!! No hay datos cargados para realizar la busqueda.")
         return
 
     print("\n--- Buscar un cliente ---")
-    print("1) Buscar por DNI\n2) Buscar por nombre y apellido")
-    modo = input("Elija una opción (1-2): ").strip()
+    print("1) Buscar por DNI\n2) Buscar por nombre y apellido\n3) Ver todos los clientes")
+    modo = input("Elija una opción (1-3): ").strip()
+    encontrado = False
 
-    
-"""
     if modo == "1":
-        dni = input("Ingrese DNI: ").strip()
-        i = 0
-        while i < len(dnis):
-            if dnis[i] == dni:
-                mostrar_cliente(i)
-                return
-            i += 1
-        print("No se encontró cliente con ese DNI.")
-
+        dniBuscado = input("Ingrese el DNI a buscar: ").strip()
+        for cliente in clientesMatris:
+            if cliente[2] == dniBuscado:
+                print(f"\n--- Cliente Encontrado ---\nNombre: {cliente[0]} {cliente[1]}\nDNI: {cliente[2]}\nEmail: {cliente[3]}\nMascota: {cliente[4]} ({cliente[5]} - {cliente[6]})\nTurno: {cliente[7]}")
+                encontrado = True
+                break
     elif modo == "2":
-        nombre_apellido = input("Ingrese nombre y apellido (exacto): ").strip()
-        objetivo = normalizar_texto(nombre_apellido)
-        i = 0
-        while i < len(nombres_apellidos):
-            if normalizar_texto(nombres_apellidos[i]) == objetivo:
-                mostrar_cliente(i)
-                return
-            i += 1
-        print("No se encontró cliente con ese nombre y apellido.")
+        #aca vamos a buscar por nombre y apellido, pero como un like 
+        nombreBuscado = input("Ingrese el Nombre a buscar: ").strip().lower()
+        apellidoBuscado = input("Ingrese el Apellido a buscar: ").strip().lower()
+        
+        for cliente in clientesMatris:
+            if (nombreBuscado in cliente[0].lower() or apellidoBuscado in cliente[1].lower()):
+                print(f"\n--- Cliente Encontrado ---\nNombre: {cliente[0]} {cliente[1]}\nDNI: {cliente[2]}\nEmail: {cliente[3]}\nMascota: {cliente[4]} ({cliente[5]} - {cliente[6]})\nTurno: {cliente[7]}")
+                encontrado = True
+                # No hacemos break aqui por si hay homónimos
+    elif modo == "3":
+        print("\n--- Clientes Encontrados ---")
+        print("Nombre | DNI | Email | Mascota | Turno")
+        for cliente in clientesMatris:
+            print(f"{cliente[0]} {cliente[1]} | {cliente[2]} | {cliente[3]} | {cliente[4]} | {cliente[7]}")
+        encontrado = True
     else:
-        print("Opción inválida.")
+        print("Opción no válida.")
+        return
 
-"""
+    if not encontrado:
+        print("\n!!! No se encontró ningún cliente con esos datos.")
 
+def buscarMascota():
+    if len(clientesMatris) == 0:
+        print("\n!!! No hay datos cargados.")
+        return
 
+    nombreMascota = input("Ingrese el nombre de la mascota a buscar: ").strip().lower()
+    encontrado = False
+    
+    for cliente in clientesMatris:
+        if cliente[4].lower() == nombreMascota:
+            print(f"\n--- Mascota Encontrada ---\nNombre Mascota: {cliente[4]}\nTipo: {cliente[5]}\nRaza: {cliente[6]}\nDueño: {cliente[0]} {cliente[1]}\nContacto: {cliente[3]}")
+            encontrado = True
+    
+    if not encontrado:
+        print(f"\n!!! No se encontró ninguna mascota llamada '{nombreMascota}'.")
 
+def cantidadMascotasRaza():
+    if len(clientesMatris) == 0:
+        print("\n!!! No hay datos cargados.")
+        return
+    
+    print("\n--- Contar mascotas por raza ---")
+    # Reutilizamos la funcion para seleccionar la raza de la lista existente
+    razaSeleccionada = opbtenerValorSeleccionado("Seleccione la raza a contar:", listaRazas)
+    
+    contador = 0
+    for cliente in clientesMatris:
+        if cliente[6] == razaSeleccionada:
+            contador += 1
+            
+    print(f"\nHay {contador} mascota(s) de la raza '{razaSeleccionada}'.")
+
+def asignarTurno():
+    if len(clientesMatris) == 0:
+        print("\n!!! No hay datos cargados.")
+        return
+        
+    print("\n--- Asignar Turno ---")
+    dniBuscado = input("Ingrese el DNI del cliente para asignar turno: ").strip()
+    
+    clienteEncontrado = None
+    indiceCliente = -1
+    
+    # Buscamos el cliente y guardamos su índice para poder modificarlo
+    for i in range(len(clientesMatris)):
+        if clientesMatris[i][2] == dniBuscado:
+            clienteEncontrado = clientesMatris[i]
+            indiceCliente = i
+            break
+            
+    if clienteEncontrado:
+        print(f"Cliente: {clienteEncontrado[0]} {clienteEncontrado[1]} - Mascota: {clienteEncontrado[4]}")
+        print(f"Turno actual: {clienteEncontrado[7]}")
+        
+        nuevoTurno = input("Ingrese la fecha y hora del turno (ej: 25/11 10:00hs): ").strip()
+        while nuevoTurno == "":
+            print("El turno no puede estar vacío.")
+            nuevoTurno = input("Ingrese la fecha y hora del turno: ").strip()
+            
+        # Actualizamos el turno en la matriz (posición 7)
+        clientesMatris[indiceCliente][7] = nuevoTurno
+        print(":) Turno asignado correctamente.")
+    else:
+        print("!!! No se encontró un cliente con ese DNI.")
 
 def mostrarMenu():
     # menú principal con opciones para el usuario
-    print("\n================ MENÚ PRINCIPAL ================")
-    print("1: Cargar datos de un cliente")
-    print("2: Buscar un cliente")
-    print("3: Buscar una mascota")
-    print("4: Ver la cantidad de mascotas según la raza")
-    print("5: Asignar un turno")
-    print("6: Salir del programa")
+    print("\n================ MENÚ PRINCIPAL ================\n1: Cargar datos de un cliente\n2: Buscar un cliente\n3: Buscar una mascota")
+    print("4: Ver la cantidad de mascotas según la raza\n5: Asignar un turno\n6: Salir del programa")
 
-# función principal del programa
+# main del programa
 def main():
     opcion = "0"
     while opcion != "6":  
@@ -166,11 +231,11 @@ def main():
             case "2":
                 buscarUnCliente()
             case "3":
-                print("")
+                buscarMascota()
             case "4":
-                print("")
+                cantidadMascotasRaza()
             case "5":
-                print("")
+                asignarTurno()
             case "6":
                 print("\nGracias por usar el programa!!!. Hasta luego.")
             case _:
@@ -178,118 +243,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-"""
-
-
-
-
-
-
-
-
-def buscar_mascota():
-    print("\n--- Buscar una mascota ---")
-    nombre = input("Nombre de la mascota (exacto): ").strip()
-    objetivo = normalizar_texto(nombre)
-
-    encontrados = []  # guardamos índices para mostrar todos los que coincidan
-    i = 0
-    while i < len(nombres_mascotas):
-        if normalizar_texto(nombres_mascotas[i]) == objetivo:
-            encontrados.append(i)
-        i += 1
-
-    if len(encontrados) == 0:
-        print("No se encontró mascota con ese nombre.")
-    else:
-        print("Se encontraron", len(encontrados), "coincidencia(s):")
-        j = 0
-        while j < len(encontrados):
-            mostrar_cliente(encontrados[j])
-            j += 1
-
-
-def cantidad_por_raza():
-    print("\n--- Cantidad de mascotas según la raza ---")
-    # Para no usar diccionarios, construimos dos listas: razas_unicas y cant_razas
-    razas_unicas = []
-    cant_razas = []
-
-    i = 0
-    while i < len(razas_mascotas):
-        raza = normalizar_texto(razas_mascotas[i])
-        # buscar raza en razas_unicas
-        pos = -1
-        j = 0
-        while j < len(razas_unicas):
-            if razas_unicas[j] == raza:
-                pos = j
-                break
-            j += 1
-        if pos == -1:
-            razas_unicas.append(raza)
-            cant_razas.append(1)
-        else:
-            cant_razas[pos] = cant_razas[pos] + 1
-        i += 1
-
-    if len(razas_unicas) == 0:
-        print("No hay mascotas cargadas.")
-    else:
-        print("Raza -> Cantidad")
-        k = 0
-        while k < len(razas_unicas):
-            print("-", razas_unicas[k], "->", cant_razas[k])
-            k += 1
-
-
-def asignar_turno():
-    print("\n--- Asignar un turno ---")
-    dni = input("Ingrese DNI del cliente: ").strip()
-
-    i = 0
-    while i < len(dnis):
-        if dnis[i] == dni:
-            print("Cliente encontrado:")
-            mostrar_cliente(i)
-            turno = input("Ingrese fecha y hora del turno (ej: 12/11/2025 15:30): ").strip()
-            if turno == "":
-                print("✗ Turno vacío. Operación cancelada.")
-                return
-            turnos[i] = turno
-            print("✓ Turno asignado correctamente.")
-            return
-        i += 1
-
-    print("No se encontró un cliente con ese DNI.")
-
-
-# -------------------------------
-# Apoyo (impresión de un "registro" en la posición i)
-# -------------------------------
-
-def mostrar_cliente(i):
-    print("----------------------------------------")
-    print("Nombre y Apellido:", nombres_apellidos[i])
-    print("DNI:", dnis[i])
-    print("Correo:", correos[i])
-    print("Mascota:", nombres_mascotas[i])
-    print("Tipo:", tipos_mascotas[i])
-    print("Raza:", razas_mascotas[i])
-    if turnos[i] != "":
-        print("Turno asignado:", turnos[i])
-    else:
-        print("Turno asignado: (sin turno)")
-    print("----------------------------------------")
-
-
-
-"""
-
-
-
