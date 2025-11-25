@@ -1,5 +1,5 @@
 clientesMatris = [] # lista de clientes
-clientesMatris.append(["Marcelo", "Maffei", "30087647", "marcelo@gmail.com", "Sonic", "Perro", "Mestizo (Perro)", "Sin turno"])
+clientesMatris.append(["Marcelo", "Maffei", "30087647", "marcelo@gmail.com", "Sonic", "1", "13", "Sin turno"])
 # voy a asumir que tiene estos animales
 listaAnimales = ["Perro", "Gato", "Conejo", "Cobayo", "Hámster", "Hurón", "Erizo","Otros"]
 # vamos a asumir algunas razas cargadas
@@ -56,13 +56,20 @@ def opbtenerValorSeleccionado(textUno, lista):
         break       
     return tipo
 
+def pausa():
+    input("\nPresioná ENTER para continuar...")
+
+def mostrarUnCliente(cliente):
+    print(f"NOMBRE: {cliente[0]} {cliente[1]} | DNI: {cliente[2]} | " +
+            f"EMAIL: {cliente[3]} | MASCOTA: {cliente[4]} | TIPO: {listaAnimales[int(cliente[5])-1]} | RAZA: {listaRazas[int(cliente[6])-1]} | TURNO: {cliente[7]}")  
+
 def cargarDatos():
     cliente = []
     dni = ""
     tipo = ""
     raza = ""
     turno = ""
-
+    print("\n=========================================")
     print(" #### Cargar datos de un cliente ####")
 
     nombre = validarCamposVacios("Ingrese Nombre: ","!!! El nombre no puede estar vacío. Intente nuevamente.")
@@ -85,7 +92,7 @@ def cargarDatos():
         #vamos a recorre los datos para verificarlo
         i = 0
         while i < len(clientesMatris):
-            print(clientesMatris[i][2]) # se que dni esta en la pos 2
+           # pos 2 es dni
             if clientesMatris[i][2] == dni:
                 print("!!! Ya existe un cliente registrado con ese DNI.")
                 repetido = False
@@ -98,56 +105,63 @@ def cargarDatos():
     mascota = validarCamposVacios("Ingrese Nombre de la mascota: ","!!! El nombre no puede estar vacío. Intente nuevamente.")
     cliente.append(mascota)
 
-    tipo = opbtenerValorSeleccionado("-Tipos de Mascotas-",listaAnimales)
+    tipo = opbtenerValorSeleccionado(" #### Tipos de Mascotas #### ",listaAnimales)
     cliente.append(tipo)
 
-    raza = opbtenerValorSeleccionado("-Razas-",listaRazas)
+    raza = opbtenerValorSeleccionado(" #### Razas #### ",listaRazas)
     cliente.append(raza)
     
     cliente.append("Sin turno") # Inicializamos el turno como "Sin turno"
     print(":) Cliente cargado con éxito.")
     # agrego los datos en la clientesMatris
     clientesMatris.append(cliente)
+    mostrarUnCliente(cliente)
+    pausa()
 
 def buscarUnCliente():
     if len(clientesMatris) == 0:
         print("\n!!! No hay datos cargados para realizar la busqueda.")
         return
+    opcion = "0"
+    while opcion != "4":
+        print("\n=========================================")
+        print(" #### Buscar un cliente ####")
+        print("1) Buscar por DNI\n2) Buscar por nombre o apellido\n3) Ver todos los clientes\n4) Salir")
+        opcion = input("Elija una opción (1-4): ").strip()
+        encontrado = False
 
-    print("\n--- Buscar un cliente ---")
-    print("1) Buscar por DNI\n2) Buscar por nombre y apellido\n3) Ver todos los clientes")
-    modo = input("Elija una opción (1-3): ").strip()
-    encontrado = False
-
-    if modo == "1":
-        dniBuscado = input("Ingrese el DNI a buscar: ").strip()
-        for cliente in clientesMatris:
-            if cliente[2] == dniBuscado:
-                print(f"\n--- Cliente Encontrado ---\nNombre: {cliente[0]} {cliente[1]}\nDNI: {cliente[2]}\nEmail: {cliente[3]}\nMascota: {cliente[4]} ({cliente[5]} - {cliente[6]})\nTurno: {cliente[7]}")
-                encontrado = True
-                break
-    elif modo == "2":
-        #aca vamos a buscar por nombre y apellido, pero como un like 
-        nombreBuscado = input("Ingrese el Nombre a buscar: ").strip().lower()
-        apellidoBuscado = input("Ingrese el Apellido a buscar: ").strip().lower()
-        
-        for cliente in clientesMatris:
-            if (nombreBuscado in cliente[0].lower() or apellidoBuscado in cliente[1].lower()):
-                print(f"\n--- Cliente Encontrado ---\nNombre: {cliente[0]} {cliente[1]}\nDNI: {cliente[2]}\nEmail: {cliente[3]}\nMascota: {cliente[4]} ({cliente[5]} - {cliente[6]})\nTurno: {cliente[7]}")
-                encontrado = True
-                # No hacemos break aqui por si hay homónimos
-    elif modo == "3":
-        print("\n--- Clientes Encontrados ---")
-        print("Nombre | DNI | Email | Mascota | Turno")
-        for cliente in clientesMatris:
-            print(f"{cliente[0]} {cliente[1]} | {cliente[2]} | {cliente[3]} | {cliente[4]} | {cliente[7]}")
-        encontrado = True
-    else:
-        print("Opción no válida.")
-        return
-
-    if not encontrado:
-        print("\n!!! No se encontró ningún cliente con esos datos.")
+        if opcion == "1":
+            dniBuscado = input("Ingrese el DNI a buscar: ").strip()
+            for cliente in clientesMatris:
+                if cliente[2] == dniBuscado:
+                    print("\n--- Cliente Encontrado ---")
+                    mostrarUnCliente(cliente)
+                    encontrado = True
+                    pausa()
+                    break
+        elif opcion == "2":
+            #aca vamos a buscar por nombre y apellido, pero como un like 
+            nombreBuscado = input("Ingrese el Nombre a buscar: ").strip().lower()
+            apellidoBuscado = input("Ingrese el Apellido a buscar: ").strip().lower()
+            for cliente in clientesMatris:
+                if (nombreBuscado in cliente[0].lower() or apellidoBuscado in cliente[1].lower()):
+                    print(f"\n--- Cliente Encontrado ---")
+                    mostrarUnCliente(cliente)
+                    encontrado = True
+                    # No hacemos break aqui por si hay homónimos
+                    pausa()
+        elif opcion == "3":
+            print("\n--- Clientes Encontrados ---")
+            for cliente in clientesMatris:
+                mostrarUnCliente(cliente)
+            encontrado = True
+        elif opcion == "4":
+            return    
+        else:
+            print("Opción no válida.")
+        if (opcion=="1" or opcion=="2" or opcion=="3") and not encontrado:
+            print("\n!!! No se encontró ningún cliente con esos datos.")
+            pausa()
 
 def buscarMascota():
     if len(clientesMatris) == 0:
