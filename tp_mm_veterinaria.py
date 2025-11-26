@@ -5,10 +5,10 @@ clientesMatris.append(["Marcelo", "Maffei", "30087647", "marcelo@gmail.com", "So
 # voy a asumir que tiene estos animales
 listaAnimales = ["Perro", "Gato", "Conejo", "Cobayo", "Hámster", "Hurón", "Erizo","Otros"]
 # vamos a asumir algunas razas cargadas
-listaRazas = ["Golden Retriever","Pastor Alemán","Bulldog Francés","Caniche (Poodle)","Beagle",
-              "Rottweiler","Dálmata","Border Collie","Boxer","Schnauzer","Husky Siberiano",
-              "Dogo Argentino","Mestizo (Perro)","Siames","Persa","Sphynx (sin pelo)",
-              "Mestizo (Gato)","otras"]
+listaRazas = ["Golden Retriever (perro)","Pastor Alemán (perro)","Bulldog Francés (perro)","Caniche (perro)","Beagle (perro)",
+              "Rottweiler (perro)","Dálmata (perro)","Border Collie (perro)","Boxer (perro)","Schnauzer","Husky Siberiano",
+              "Dogo Argentino (perro)","Mestizo (perro)","Siames (gato)","Persa (gato)","Sphynx (sin pelo) (gato)",
+              "Mestizo (gato)","otras"]
 
 #valido que no me ingresen datos vacios
 def validarCamposVacios(textoIngreso,textoError):
@@ -112,7 +112,17 @@ def cargarDatos():
     tipo = opbtenerValorSeleccionado(" #### Tipos de Mascotas #### ",listaAnimales)
     cliente.append(tipo)
 
-    raza = opbtenerValorSeleccionado(" #### Razas #### ",listaRazas)
+    while True:
+        raza = opbtenerValorSeleccionado(" #### Razas #### ",listaRazas)
+        if tipo == 1 and (listaRazas[int(raza)-1].endswith("(perro)") or raza == 18):      # Perro
+            break
+        elif tipo == 2 and (listaRazas[int(raza)-1].endswith("(gato)") or raza == 18):     # Gato
+            break
+        elif tipo > 3 and  raza == 18:     # Otro
+            break
+        else:
+            print("!!! Esa raza no corresponde al tipo de mascota seleccionado.") 
+
     cliente.append(raza)
     
     cliente.append("Sin turno") # Inicializamos el turno como "Sin turno"
@@ -120,6 +130,7 @@ def cargarDatos():
     # agrego los datos en la clientesMatris
     clientesMatris.append(cliente)
     mostrarUnCliente(cliente)
+    clientesMatris.sort(key=lambda cliente: (cliente[0].lower(), cliente[1].lower()))
     pausa()
 
 def buscarUnCliente():
@@ -273,6 +284,7 @@ def asignarTurno():
         pausa()
     else:
         print("!!! No se encontró un cliente con ese DNI.")
+        pausa()
 
 def mostrarMenu():
     # menú principal con opciones para el usuario
