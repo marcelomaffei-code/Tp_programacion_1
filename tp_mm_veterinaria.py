@@ -1,3 +1,5 @@
+from datetime import datetime
+
 clientesMatris = [] # lista de clientes
 clientesMatris.append(["Marcelo", "Maffei", "30087647", "marcelo@gmail.com", "Sonic", "1", "13", "Sin turno"])
 # voy a asumir que tiene estos animales
@@ -10,11 +12,12 @@ listaRazas = ["Golden Retriever","Pastor Alemán","Bulldog Francés","Caniche (P
 
 #valido que no me ingresen datos vacios
 def validarCamposVacios(textoIngreso,textoError):
-    valor = ""
-    valor = input(textoIngreso).strip()
-    while valor == "":
-        print(textoError)
-    return valor
+    while True:
+        valor = input(textoIngreso).strip()
+        if valor == "":
+            print(textoError)
+        else:
+            return valor
 
 # valido el mail, por lo general suelo usar un liberia o expresiones regulares, pero como no la vimos, lo hago a mano
 def validarEmail():
@@ -62,7 +65,8 @@ def pausa():
 def mostrarUnCliente(cliente):
     print(f"NOMBRE: {cliente[0]} {cliente[1]} | DNI: {cliente[2]} | " +
             f"EMAIL: {cliente[3]} | MASCOTA: {cliente[4]} | TIPO: {listaAnimales[int(cliente[5])-1]} | RAZA: {listaRazas[int(cliente[6])-1]} | TURNO: {cliente[7]}")  
-
+    print("\n================================================================")
+    
 def cargarDatos():
     cliente = []
     dni = ""
@@ -151,10 +155,12 @@ def buscarUnCliente():
                     # No hacemos break aqui por si hay homónimos
                     pausa()
         elif opcion == "3":
-            print("\n--- Clientes Encontrados ---")
+            print("\n=========================================")
+            print("\n#### Clientes Encontrados ####")
             for cliente in clientesMatris:
                 mostrarUnCliente(cliente)
             encontrado = True
+            pausa()
         elif opcion == "4":
             return    
         else:
@@ -165,15 +171,16 @@ def buscarUnCliente():
 
 def buscarMascota():
     if len(clientesMatris) == 0:
-        print("\n!!! No hay datos cargados.")
+        print("\n!!! No hay datos cargados para realizar la busqueda.")
         return
-
+    print("\n=========================================")
     nombreMascota = input("Ingrese el nombre de la mascota a buscar: ").strip().lower()
     encontrado = False
     
     for cliente in clientesMatris:
-        if cliente[4].lower() == nombreMascota:
-            print(f"\n--- Mascota Encontrada ---\nNombre Mascota: {cliente[4]}\nTipo: {cliente[5]}\nRaza: {cliente[6]}\nDueño: {cliente[0]} {cliente[1]}\nContacto: {cliente[3]}")
+        if nombreMascota in cliente[4].lower():
+            print("------ Mascota Encontrada ------")
+            mostrarUnCliente(cliente)
             encontrado = True
     
     if not encontrado:
@@ -183,24 +190,68 @@ def cantidadMascotasRaza():
     if len(clientesMatris) == 0:
         print("\n!!! No hay datos cargados.")
         return
-    
-    print("\n--- Contar mascotas por raza ---")
-    # Reutilizamos la funcion para seleccionar la raza de la lista existente
-    razaSeleccionada = opbtenerValorSeleccionado("Seleccione la raza a contar:", listaRazas)
-    
-    contador = 0
+    print("\n=========================================")
+    print(" ###### Mascotas por raza ------ Cantidad ##### ")
+    cantidadesPorRaza = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     for cliente in clientesMatris:
-        if cliente[6] == razaSeleccionada:
-            contador += 1
-            
-    print(f"\nHay {contador} mascota(s) de la raza '{razaSeleccionada}'.")
+       cantidadesPorRaza[int(cliente[6])-1] += 1
+    x = 1
+    for objeto in listaRazas:
+        print(str(x) + " - " + objeto + " ------------ " + str(cantidadesPorRaza[x-1]))
+        x += 1
+    pausa()
+
+def validarFechaHora():
+    while True:
+        fecha_str = input("Ingrese fecha (DD/MM): ").strip()
+        if "/" not in fecha_str: # Validar formato básico antes de usar datetime
+            print("Formato incorrecto. Use DD/MM")
+            continue
+        parte_dia, parte_mes = fecha_str.split("/", 1)
+        # Validar que día y mes sean numéricos
+        if not parte_dia.isdigit() or not parte_mes.isdigit():
+            print("Día y mes deben ser números.")
+            continue
+        dia = int(parte_dia)
+        mes = int(parte_mes)
+        # Validación manual de rango
+        if dia < 1 or dia > 31:
+            print("Día inválido. Debe estar entre 1 y 31.")
+            continue
+        if mes < 1 or mes > 12:
+            print("Mes inválido. Debe estar entre 1 y 12.")
+            continue
+        # Ahora pedimos hora
+        hora_str = input("Ingrese hora (HH:MM): ").strip()
+        if ":" not in hora_str:
+            print("Formato incorrecto. Use HH:MM")
+            continue
+        parte_hora, parte_min = hora_str.split(":", 1)
+        if not parte_hora.isdigit() or not parte_min.isdigit():
+            print("La hora y los minutos deben ser números.")
+            continue
+        hora = int(parte_hora)
+        minuto = int(parte_min)
+        if hora < 0 or hora > 23:
+            print("Hora inválida. Debe estar entre 00 y 23.")
+            continue
+        if minuto < 0 or minuto > 59:
+            print("Minuto inválido. Debe estar entre 00 y 59.")
+            continue
+        # Validar fecha final usando datetime
+        try:
+            datetime(2025, mes, dia, hora, minuto)
+            # Si llegamos acá es válida
+            return f"{dia:02d}/{mes:02d} {hora:02d}:{minuto:02d}hs"
+        except ValueError:
+            print("Fecha inválida (el día no existe en ese mes). Intente otra vez.")
 
 def asignarTurno():
     if len(clientesMatris) == 0:
         print("\n!!! No hay datos cargados.")
         return
-        
-    print("\n--- Asignar Turno ---")
+    print("\n=========================================")
+    print("\n#### Asignar Turno ####")
     dniBuscado = input("Ingrese el DNI del cliente para asignar turno: ").strip()
     
     clienteEncontrado = None
@@ -214,17 +265,12 @@ def asignarTurno():
             break
             
     if clienteEncontrado:
-        print(f"Cliente: {clienteEncontrado[0]} {clienteEncontrado[1]} - Mascota: {clienteEncontrado[4]}")
-        print(f"Turno actual: {clienteEncontrado[7]}")
-        
-        nuevoTurno = input("Ingrese la fecha y hora del turno (ej: 25/11 10:00hs): ").strip()
-        while nuevoTurno == "":
-            print("El turno no puede estar vacío.")
-            nuevoTurno = input("Ingrese la fecha y hora del turno: ").strip()
-            
-        # Actualizamos el turno en la matriz (posición 7)
+        mostrarUnCliente(clienteEncontrado)
+        nuevoTurno = validarFechaHora()
         clientesMatris[indiceCliente][7] = nuevoTurno
         print(":) Turno asignado correctamente.")
+        mostrarUnCliente(clienteEncontrado)
+        pausa()
     else:
         print("!!! No se encontró un cliente con ese DNI.")
 
