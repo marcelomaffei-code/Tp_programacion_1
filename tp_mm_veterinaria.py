@@ -203,7 +203,7 @@ def cantidadMascotasRaza():
         return
     print("\n=========================================")
     print(" ###### Mascotas por raza ------ Cantidad ##### ")
-    cantidadesPorRaza = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    cantidadesPorRaza = [0] * len(listaRazas)
     for cliente in clientesMatris:
        cantidadesPorRaza[int(cliente[6])-1] += 1
     x = 1

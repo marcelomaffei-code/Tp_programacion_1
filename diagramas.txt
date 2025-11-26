@@ -1,0 +1,255 @@
+flowchart TD
+A([Inicio]) -->
+D{opcion es distinta de 6}
+D -- Si --> E[Mostrar menu]
+E --> F[Leer opcion 1 a 6]
+
+F -->|1| G1[Llamar a cargarDatos]
+F -->|2| G2[Llamar a buscarUnCliente]
+F -->|3| G3[Llamar a buscarMascota]
+F -->|4| G4[Llamar a cantidadMascotasRaza]
+F -->|5| G5[Llamar a asignarTurno]
+F -->|6| G6[Mostrar mensaje de salida]
+
+
+G1 --> R[Volver al ciclo]
+G2 --> R
+G3 --> R
+G4 --> R
+G5 --> R
+
+
+R --> D
+
+D -- No --> Z([Fin])
+G6 --> Z
+
+//--------------------------------------------------------------------------
+
+flowchart TD
+A([Inicio cargarDatos]) --> B[Mostrar titulo Cargar datos de un cliente]
+B --> C[Validar nombre no vacio y guardar]
+C --> D[Validar apellido no vacio y guardar]
+D --> E[Inicializar bandera repetido en falso]
+
+E --> G[Pedir DNI]
+G --> H[Validar DNI: no vacio, solo numeros, max 8 digitos]
+H --> I{DNI con formato valido?}
+
+I -- No --> M1[Mostrar mensaje de error de formato]
+M1 --> G
+
+I -- Si --> J[Recorrer lista de clientes y comparar DNI]
+J --> K{DNI ya existe?}
+
+K -- Si --> M2[Mostrar mensaje Ya existe cliente con ese DNI]
+M2 --> G
+
+K -- No --> L[Guardar DNI en el cliente]
+
+L --> N[Validar email con reglas basicas y guardar]
+N --> O[Validar nombre de mascota no vacio y guardar]
+
+O --> P[Mostrar menu de tipos de mascota y guardar opcion]
+P --> Q[Mostrar menu de razas y leer opcion]
+
+Q --> R{Combinacion tipo y raza valida?}
+
+R -- No --> S[Mostrar mensaje Raza no corresponde al tipo]
+S --> Q
+
+R -- Si --> T[Guardar raza en el cliente]
+
+T --> U[Asignar texto Sin turno al cliente]
+U --> V[Agregar cliente a la lista de clientes]
+V --> W[Ordenar lista por nombre y apellido]
+W --> X[Mostrar datos del cliente]
+X --> Y[Pausa esperar ENTER]
+Y --> Z([Fin de cargarDatos])
+
+
+
+//--------------------------------------------------------------------------
+
+
+
+flowchart TD
+    A([Inicio asignarTurno]) --> B{Hay clientes cargados?}
+    
+    B -- No --> C[Mostrar 'No hay datos cargados']
+    C --> Z([Fin asignarTurno])
+    
+    B -- Si --> D[Mostrar titulo Asignar turno]
+    D --> E[Pedir DNI del cliente]
+    E --> F[Recorrer lista y buscar DNI]
+    F --> G{Se encontro el cliente?}
+    
+    G -- No --> H[Mostrar 'No se encontro un cliente con ese DNI']
+    H --> I[Pausa presionar ENTER]
+    I --> Z
+    
+    G -- Si --> J[Mostrar datos del cliente]
+    J --> K[Llamar a validarFechaHora]
+    K --> L[Recibir fecha y hora validas]
+    L --> M[Guardar nuevo turno en el cliente]
+    M --> N[Mostrar 'Turno asignado correctamente']
+    N --> O[Mostrar datos actualizados del cliente]
+    O --> P[Pausa presionar ENTER]
+    P --> Z([Fin asignarTurno])
+
+
+
+//--------------------------------------------------------------------------
+
+
+
+    flowchart TD
+    A([Inicio validarFechaHora]) --> B
+    B[Pedir fecha en formato DD/MM] --> C{Fecha tiene '/' ?}
+    
+    C -- No --> C1[Mostrar 'Formato incorrecto DD/MM']
+    C1 --> B
+    
+    C -- Si --> D[Separar dia y mes]
+    D --> E{Dia y mes son numeros?}
+    
+    E -- No --> E1[Mostrar 'Dia y mes deben ser numeros']
+    E1 --> B
+    
+    E -- Si --> F{Dia entre 1 y 31<br/>y mes entre 1 y 12?}
+    
+    F -- No --> F1[Mostrar 'Dia o mes invalidos']
+    F1 --> B
+    
+    F -- Si --> G[Pedir hora en formato HH:MM]
+    G --> H{Hora tiene ':' ?}
+    
+    H -- No --> H1[Mostrar 'Formato incorrecto HH:MM']
+    H1 --> G
+    
+    H -- Si --> I[Separar hora y minuto]
+    I --> J{Hora y minuto son numeros?}
+    
+    J -- No --> J1[Mostrar 'Hora y minutos deben ser numeros']
+    J1 --> G
+    
+    J -- Si --> K{Hora entre 0 y 23<br/>y minuto entre 0 y 59?}
+    
+    K -- No --> K1[Mostrar 'Hora o minuto invalidos']
+    K1 --> G
+    
+    K -- Si --> L{Fecha existe en el calendario?}
+    
+    L -- No --> L1[Mostrar 'Fecha invalida segun el mes']
+    L1 --> B
+    
+    L -- Si --> M[Formar texto DD/MM HH:MMhs]
+    M --> Z([Devolver cadena de fecha y hora valida])
+
+
+//--------------------------------------------------------------------------
+
+flowchart TD
+    A([Inicio buscarUnCliente]) --> B{Hay clientes cargados?}
+
+    B -- No --> C[Mostrar 'No hay datos cargados para la busqueda']
+    C --> Z([Fin buscarUnCliente])
+
+    B -- Si --> D[opcion = 0]
+    D --> E{opcion distinta de 4?}
+
+    E -- No --> Z
+
+    E -- Si --> F[Mostrar menu de busqueda<br/>1 DNI - 2 Nombre/Apellido - 3 Ver todos - 4 Salir]
+    F --> G[Leer opcion]
+    G --> H[encontrado = False]
+
+    %% opcion 1
+    H --> I1{opcion = 1?}
+    I1 -- Si --> J1[Pedir DNI a buscar]
+    J1 --> K1[Recorrer lista y comparar DNI]
+    K1 --> L1{Se encontro?}
+    L1 -- Si --> M1[Mostrar cliente encontrado]
+    M1 --> N1[Pausa ENTER]
+    N1 --> R[Repetir ciclo]
+    L1 -- No --> O1[Mostrar 'No se encontro ningun cliente con esos datos']
+    O1 --> P1[Pausa ENTER]
+    P1 --> R
+
+    %% opcion 2
+    H --> I2{opcion = 2?}
+    I2 -- Si --> J2[Pedir nombre y apellido a buscar]
+    J2 --> K2[Recorrer lista y comparar con contains]
+    K2 --> L2{Se encontro alguno?}
+    L2 -- Si --> M2[Mostrar todos los clientes que coinciden]
+    M2 --> N2[Pausa ENTER]
+    N2 --> R
+    L2 -- No --> O2[Mostrar 'No se encontro ningun cliente con esos datos']
+    O2 --> P2[Pausa ENTER]
+    P2 --> R
+
+    %% opcion 3
+    H --> I3{opcion = 3?}
+    I3 -- Si --> J3[Mostrar todos los clientes]
+    J3 --> K3[Pausa ENTER]
+    K3 --> R
+
+    %% opcion 4
+    H --> I4{opcion = 4?}
+    I4 -- Si --> Z
+
+    %% opcion invalida
+    H --> I5{otra opcion?}
+    I5 -- Si --> J5[Mostrar 'Opcion no valida']
+    J5 --> R
+
+    R --> E
+
+
+
+//--------------------------------------------------------------------------
+
+
+    flowchart TD
+    A([Inicio buscarMascota]) --> B{Hay clientes cargados?}
+
+    B -- No --> C[Mostrar 'No hay datos cargados']
+    C --> Z([Fin buscarMascota])
+
+    B -- Si --> D[Pedir nombre de la mascota a buscar]
+    D --> E[encontrado = False]
+    E --> F[Recorrer lista de clientes]
+    F --> G{Nombre de mascota contiene el texto buscado?}
+
+    G -- Si --> H[Mostrar 'Mascota encontrada' y datos del cliente]
+    H --> I[encontrado = True]
+    I --> J[Seguir con el siguiente cliente]
+    J --> F
+
+    G -- No --> J
+
+    F --> K{Terminamos de recorrer la lista?}
+    K -- No --> F
+
+    K -- Si --> L{encontrado es True?}
+    L -- Si --> Z([Fin buscarMascota])
+    L -- No --> M[Mostrar 'No se encontro ninguna mascota con ese nombre']
+    M --> Z
+
+    //--------------------------------------------------------------------------
+
+    flowchart TD
+    A([Inicio cantidadMascotasRaza]) --> B{Hay clientes cargados?}
+
+    B -- No --> C[Mostrar 'No hay datos cargados']
+    C --> Z([Fin cantidadMascotasRaza])
+
+    B -- Si --> D[Inicializar vector cantidadesPorRaza en 0]
+    D --> E[Recorrer lista de clientes]
+    E --> F[Tomar indice de raza del cliente]
+    F --> G[Incrementar contador de esa raza]
+    G --> H{Quedan clientes por procesar?}
+    H -- Si --> E
+    H -- No --> I[Recorrer lista de razas y mostrar<br/>Raza - Cantidad]
+    I --> J[Pausa ENTER]
+    J --> Z([Fin cantidadMascotasRaza])
