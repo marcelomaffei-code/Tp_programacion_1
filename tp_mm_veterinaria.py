@@ -6,7 +6,7 @@ clientesMatris.append(["Marcelo", "Maffei", "30087647", "marcelo@gmail.com", "So
 listaAnimales = ["Perro", "Gato", "Conejo", "Cobayo", "Hámster", "Hurón", "Erizo","Otros"]
 # vamos a asumir algunas razas cargadas
 listaRazas = ["Golden Retriever (perro)","Pastor Alemán (perro)","Bulldog Francés (perro)","Caniche (perro)","Beagle (perro)",
-              "Rottweiler (perro)","Dálmata (perro)","Border Collie (perro)","Boxer (perro)","Schnauzer","Husky Siberiano",
+              "Rottweiler (perro)","Dálmata (perro)","Border Collie (perro)","Boxer (perro)","Schnauzer (perro)","Husky Siberiano (perro)",
               "Dogo Argentino (perro)","Mestizo (perro)","Siames (gato)","Persa (gato)","Sphynx (sin pelo) (gato)",
               "Mestizo (gato)","otras"]
 
@@ -114,11 +114,11 @@ def cargarDatos():
 
     while True:
         raza = opbtenerValorSeleccionado(" #### Razas #### ",listaRazas)
-        if tipo == 1 and (listaRazas[int(raza)-1].endswith("(perro)") or raza == 18):      # Perro
+        if tipo == 1 and (1 <= raza <= 13 or raza == 18):      # Perro
             break
-        elif tipo == 2 and (listaRazas[int(raza)-1].endswith("(gato)") or raza == 18):     # Gato
+        elif tipo == 2 and (14 <= raza <= 17 or raza == 18):     # Gato
             break
-        elif tipo > 3 and  raza == 18:     # Otro
+        elif tipo >= 3 and raza == 18:     # Otro
             break
         else:
             print("!!! Esa raza no corresponde al tipo de mascota seleccionado.") 
